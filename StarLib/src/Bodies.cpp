@@ -31,6 +31,17 @@ std::vector<Body> BodyStore::get_group(const GroupRef &ref)
     return std::vector<Body>(first, last);
 }
 
+std::vector<Body> BodyStore::get_group(int nr)
+{
+	const GroupRef &ref = group_refs[nr];
+	return get_group(ref);
+}
+
+std::string BodyStore::get_group_name(int nr)
+{
+	return group_refs[nr].name;
+}
+
 } // namespace StarLib
 
 

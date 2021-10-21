@@ -36,7 +36,11 @@ public:
 
 	GroupRef add_group(std::string group_name, std::vector<Body> &group_members);
 	std::vector<Body> get_group(const GroupRef &ref);
-	std::string get_group_name(const GroupRef &ref);
+
+	// TODO
+	std::vector<Body> get_group(int nr);
+	std::string get_group_name(int nr);
+
 
 	int size() { return bodies.size(); }
 
