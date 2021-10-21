@@ -64,6 +64,39 @@ int main(int argc, char *argv[])
     for (Body &b : g2)
         cout << b.name << endl;
 
+
+    bodies.clear();
+    bodies.reserve(num_bodies*2);
+	for (int i = 0; i < num_bodies * 2; i++)
+	{
+        char name[100];
+        sprintf(name, "test body %d", i);
+        bodies.emplace_back(
+            Body{name, i * 0.1,
+                 StateVector(Vec3(i, i, i), Vec3(i, i, i), i * 1000.0)});
+	}
+
+	BodyStore store2;
+	auto gref = store2.add_group("test group", bodies);
+
+	vector<Body> tg = store2.get_group(gref);
+    cout << "\ntest group: " << endl;
+    for (Body &b : tg)
+        cout << b.name << endl;
+
+	BodyStoreConverter::copy_metadata(store, store2);
+    store.get_group(g2ref);
+    store.get_group(g1ref);
+
+    cout << "copy G1: " << endl;
+    for (Body &b : g1)
+        cout << b.name << endl;
+
+    cout << "copy G2: " << endl;
+    for (Body &b : g2)
+        cout << b.name << endl;
+
+
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

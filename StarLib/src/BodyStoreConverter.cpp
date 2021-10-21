@@ -16,6 +16,9 @@ BodyStoreConverter::~BodyStoreConverter()
 
 void BodyStoreConverter::copy_metadata(BodyStore &source, BodyStore &destination)
 {
+	/**
+	 * copies group refs. and bodies names
+	 */
 
     ASSERT(source.bodies.size() == destination.bodies.size(),
            "Error while copying BodyStore metadata. numbers of bodies do not "
