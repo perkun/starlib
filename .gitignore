@@ -1,0 +1,13 @@
+Makefile
+*.make
+.cache/**
+*/.cache/**
+tests/*/.cache/**
+.vscode/**
+compile_commands.json
+*/bin/**
+tests/*/bin/**
+tests/*/data/*.png
+tests/*/data/*.db
+*/build/**
+tests/*/build/**
