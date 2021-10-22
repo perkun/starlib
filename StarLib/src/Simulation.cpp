@@ -50,7 +50,7 @@ void Simulation::set_integrator_initial_data()
 
     BodyStoreConverter conv;
 
-    integrator->set_conditions(
+    integrator->set_state(
         conv.get_collection_of<Vec3>(conv.get_position, body_store),
         conv.get_collection_of<Vec3>(conv.get_velocitiy, body_store),
         conv.get_collection_of<double>(conv.get_mass, body_store));

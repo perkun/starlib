@@ -34,9 +34,8 @@ public:
     ~Integrator() { }
 
     double integrate(double time_delta, double sequence_size, int precision);
-    void set_conditions(const std::vector<Vec3> &pos,
-                        const std::vector<Vec3> &vel,
-                        const std::vector<double> &m);
+    void set_state(const std::vector<Vec3> &pos, const std::vector<Vec3> &vel,
+                   const std::vector<double> &m);
 
     std::vector<Vec3> positions;
     std::vector<Vec3> velocities;

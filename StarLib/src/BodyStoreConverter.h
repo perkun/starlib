@@ -29,6 +29,7 @@ public:
 		return returnee;
 	}
 
+	// getters
 	static double get_mass(Body &body) { return body.mass; }
 	static Vec3 get_position(Body &body) { return body.state.position; }
 	static Vec3 get_velocitiy(Body &body) { return body.state.velocity; }

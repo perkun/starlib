@@ -12,9 +12,9 @@ static double HALF = 0.5;
 static double SR = 1.4;
 
 
-void Integrator::set_conditions(const std::vector<Vec3> &pos,
-                                const std::vector<Vec3> &vel,
-                                const std::vector<double> &m)
+void Integrator::set_state(const std::vector<Vec3> &pos,
+						   const std::vector<Vec3> &vel,
+						   const std::vector<double> &m)
 {
 	positions = pos;
 	velocities = vel;
@@ -43,9 +43,6 @@ double Integrator::integrate(double time_delta, double sequence_size, int precis
     x = positions;
     v = velocities;
 
-
-    /* All dimensions are incremented due to FORTRAN - C array compatibility:
-       a[9] means that we use a[1] to a[8] and a[0] is a spare location ! */
 
     int nw[] = {0, 0, 1, 3, 6, 10, 15, 21};
     int npq, nsf, nper, ncl, nes, n, k, l, la, lb, lc, ld, le, ncount, ns, m,
