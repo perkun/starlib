@@ -61,14 +61,24 @@ class StepStrategy : public Strategy
 public:
     void execute(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
                          double t);
-	StepStrategy* push_function(std::function<void(std::vector<Vec3> &pos,
+	StepStrategy* push_lambda(std::function<void(std::vector<Vec3> &pos,
 					   std::vector<Vec3> &vel, double t)>
-		fn);
-
-	template <typename Func>
-	void add_func(Func fn)
+		fn)
 	{
 		functions.push_back(fn);
+		return this;
+	}
+
+
+	template <typename Func>
+	StepStrategy* push_member_func(Func fn)
+	{
+		auto binded_fn = std::bind(fn, this, std::placeholders::_1,
+								   std::placeholders::_2,
+								   std::placeholders::_3);
+
+		functions.push_back(binded_fn);
+		return this;
 	}
 
 

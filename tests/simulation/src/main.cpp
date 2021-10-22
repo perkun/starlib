@@ -72,18 +72,12 @@ int main(int argc, char *argv[])
     // 				acc += Vec3(1.);
     // 		});
     //
-    step_strategy->push_function(
+    step_strategy->push_lambda(
         [&sim](vector<Vec3> &pos, vector<Vec3> &vel, double t)
         { cout << sim.get_integration_time() << endl; });
 
-// 	std::function<int(double)> fnCaller = std::bind(&A::fn, &anInstance, std::placeholders::_1);
+	step_strategy->push_member_func(&StepStrategy::print_mass);
 
-// 	std::function<void(vector<Vec3> &pos, vector<Vec3> &vel, double t)> fn =
-// 		std::bind(&StepStrategy::print_mass, step_strategy, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
-// 	step_strategy->push_function(fn);
-
-
-	step_strategy->add_func(StepStrategy::print_mass);
     //
     //     step_strategy->push_function(
     //         [&sun](vector<Vec3> &pos, vector<Vec3> &vel, double t,

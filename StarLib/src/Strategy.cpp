@@ -29,14 +29,6 @@ void ForceStrategy::execute(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
 }
 
 
-StepStrategy *StepStrategy::push_function(
-    std::function<void(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
-                       double t)>
-        fn)
-{
-    functions.push_back(fn);
-    return this;
-}
 
 
 void StepStrategy::execute(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
