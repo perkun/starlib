@@ -13,6 +13,7 @@ namespace StarLib
 {
 
 class Simulation;
+class Particle;
 
 
 
@@ -25,6 +26,8 @@ public:
 
 	void set_context(Simulation *simulation);
 	Simulation* get_context() { return context; }
+	Particle &get_particle(int i);
+
 
 protected:
 	Simulation* context = nullptr;
@@ -37,9 +40,25 @@ class ForceStrategy : public Strategy
 public:
     void execute(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
                          double t, std::vector<Vec3> &g);
-	ForceStrategy* push_function(std::function<void(std::vector<Vec3> &pos,
+	ForceStrategy* push_lambda(std::function<void(std::vector<Vec3> &pos,
 					   std::vector<Vec3> &vel, double t, std::vector<Vec3> &g)>
-		fn);
+		fn)
+	{
+		functions.push_back(fn);
+		return this;
+	}
+
+	template <typename Func>
+	ForceStrategy* push_member_func(Func fn)
+	{
+		auto binded_fn = std::bind(fn, this, std::placeholders::_1,
+								   std::placeholders::_2,
+								   std::placeholders::_3,
+								   std::placeholders::_4);
+
+		functions.push_back(binded_fn);
+		return this;
+	}
 
 
 protected:
@@ -50,8 +69,12 @@ protected:
 					>
 			   > functions;
 
-	// functions that can be attached to specific strategy
-	void dummy(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t, std::vector<Vec3> &g);
+public:
+	/** predefined functions, that can be pushed by client */
+	void dummy(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t, std::vector<Vec3> &g)
+	{
+		std::cout << "Dummy force function \n";
+	}
 
 };
 
@@ -59,8 +82,8 @@ protected:
 class StepStrategy : public Strategy
 {
 public:
-    void execute(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
-                         double t);
+    void execute(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t);
+
 	StepStrategy* push_lambda(std::function<void(std::vector<Vec3> &pos,
 					   std::vector<Vec3> &vel, double t)>
 		fn)
@@ -84,13 +107,13 @@ public:
 
 protected:
     std::vector<
-        std::function<
-						void(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
-								double t)
-					>
-			   > functions;
+        	std::function<
+				void(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t)
+			>
+	> functions;
 
 public:
+	/** predefined functions, that can be pushed by client */
 	void print_mass(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t);
 
 };
@@ -105,7 +128,17 @@ public:
 
     virtual bool should_stop(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
                              double t);
+	void set_stop_func(
+			std::function<bool(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t)> fn)
+	{
+		stop_function = fn;
+	}
+
 protected:
+	std::function<bool(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t)>
+		stop_function = [](std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t)
+		{ return false; };
+
 };
 
 

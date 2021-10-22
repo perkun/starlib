@@ -28,6 +28,7 @@ using namespace StarLib;
 // };
 
 
+
 int main(int argc, char *argv[])
 {
     Simulation sim;
@@ -49,46 +50,37 @@ int main(int argc, char *argv[])
     shared_ptr<ForceStrategy> force_strategy = sim.create_force_strategy();
     shared_ptr<StepStrategy> step_strategy = sim.create_step_strategy();
 //     shared_ptr<StepStrategy> step_strategy = sim.create_step_strategy<MyStepStrategy>();
-//     shared_ptr<StopStrategy> stop_strategy = sim.create_stop_strategy();
+    shared_ptr<StopStrategy> stop_strategy = sim.create_stop_strategy();
 
 
-    /* WARNING!
-     * particles in Integrator pos and vel vectors are not guaranteed to be in
-     * the order of creation
-     */
-
-    force_strategy->push_function(
+    force_strategy->push_lambda(
         [](vector<Vec3> &pos, vector<Vec3> &vel, double t, vector<Vec3> &g)
         {
             for (Vec3 &acc : g)
                 acc = Vec3(0.0001, 0.0001, 0.);
         });
-    //
-    //     force_strategy->push_function(
-    //         [](vector<Vec3> &pos, vector<Vec3> &vel, double t, vector<Vec3>
-    //         &g)
-    //         {
-    // 			for (Vec3 &acc: g)
-    // 				acc += Vec3(1.);
-    // 		});
-    //
+
     step_strategy->push_lambda(
         [&sim](vector<Vec3> &pos, vector<Vec3> &vel, double t)
-        { cout << sim.get_integration_time() << endl; });
+        {
+			cout << sim.get_integration_time() << endl;
+			cout << sim.get_particle(1).get_component<NameComponent>().name << endl;
+		});
 
 	step_strategy->push_member_func(&StepStrategy::print_mass);
 
-    //
-    //     step_strategy->push_function(
-    //         [&sun](vector<Vec3> &pos, vector<Vec3> &vel, double t,
-    //         vector<Vec3> &g)
-    //         {
-    //             for (Vec3 &p : pos)
-    //                 cout << p << endl;
-    //         });
+	stop_strategy->set_stop_func(
+		[](vector<Vec3> &pos, vector<Vec3> &vel, double t)
+		{
+			if (t >= 5)
+				return true;
+			return false;
+		});
 
 
     sim.run();
+
+
 
     return 0;
 }
