@@ -7,6 +7,9 @@ namespace StarLib
 
 Simulation::Simulation()
 {
+	create_force_strategy();
+	create_step_strategy();
+	create_stop_strategy();
 }
 
 

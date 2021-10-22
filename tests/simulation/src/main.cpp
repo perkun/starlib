@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     shared_ptr<ForceStrategy> force_strategy = sim.create_force_strategy();
     shared_ptr<StepStrategy> step_strategy =
         sim.create_step_strategy<MyStepStrategy>();
-    shared_ptr<StopStrategy> stop_strategy = sim.create_stop_strategy();
+//     shared_ptr<StopStrategy> stop_strategy = sim.create_stop_strategy();
 
 
     /* WARNING!
