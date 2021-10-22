@@ -12,7 +12,8 @@
 namespace StarLib
 {
 
-class Strategy;
+class ForceStrategy;
+class StepStrategy;
 class StopStrategy;
 
 enum EQ_CLASS
@@ -53,7 +54,8 @@ public:
         return tm;
     }
 
-    std::shared_ptr<Strategy> force_strategy, step_strategy;
+    std::shared_ptr<ForceStrategy> force_strategy;
+	std::shared_ptr<StepStrategy> step_strategy;
     std::shared_ptr<StopStrategy> stop_strategy;
 
 protected:

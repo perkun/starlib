@@ -6,13 +6,13 @@
 using namespace std;
 using namespace StarLib;
 
-class MyStepStrategy : public Strategy
+class MyStepStrategy : public StepStrategy
 {
 public:
     MyStepStrategy()
     {
         push_function(
-            [=](vector<Vec3> &pos, vector<Vec3> &vel, double t, vector<Vec3> &g)
+            [=](vector<Vec3> &pos, vector<Vec3> &vel, double t)
             {
                 for (int i = 0; i < pos.size(); i++)
                 {
@@ -27,9 +27,9 @@ public:
     }
 };
 
+
 int main(int argc, char *argv[])
 {
-
     Simulation sim;
 
     sim.set_duration_and_direction(10, TimeArrow::FUTURE);
@@ -40,25 +40,22 @@ int main(int argc, char *argv[])
 
 
     sun.add_component<MassComponent>(1.0);
-	sun.add_component<NameComponent>("The Sun");
+    sun.add_component<NameComponent>("The Sun");
 
     earth.add_component<MassComponent>(0.00001);
-	earth.add_component<NameComponent>("the Earth");
+    earth.add_component<NameComponent>("the Earth");
 
 
-    // TODO delegate creating strategies to Simulation
-    shared_ptr<Strategy> force_strategy = make_shared<Strategy>();
-    shared_ptr<Strategy> step_strategy = make_shared<MyStepStrategy>();
-    shared_ptr<StopStrategy> stop_strategy = make_shared<StopStrategy>();
+    shared_ptr<ForceStrategy> force_strategy = sim.create_force_strategy();
+    shared_ptr<StepStrategy> step_strategy =
+        sim.create_step_strategy<MyStepStrategy>();
+    shared_ptr<StopStrategy> stop_strategy = sim.create_stop_strategy();
 
-    sim.set_force_strategy(force_strategy);
-    sim.set_step_strategy(step_strategy);
-    sim.set_stop_strategy(stop_strategy);
 
-	/* WARNING!
-	 * particles in Integrator pos and vel vectors are not guaranteed to be in
-	 * the order of creation
-	 */
+    /* WARNING!
+     * particles in Integrator pos and vel vectors are not guaranteed to be in
+     * the order of creation
+     */
 
     force_strategy->push_function(
         [](vector<Vec3> &pos, vector<Vec3> &vel, double t, vector<Vec3> &g)
@@ -66,24 +63,26 @@ int main(int argc, char *argv[])
             for (Vec3 &acc : g)
                 acc = Vec3(0.0001, 0.0001, 0.);
         });
-//
-//     force_strategy->push_function(
-//         [](vector<Vec3> &pos, vector<Vec3> &vel, double t, vector<Vec3> &g)
-//         {
-// 			for (Vec3 &acc: g)
-// 				acc += Vec3(1.);
-// 		});
-//
+    //
+    //     force_strategy->push_function(
+    //         [](vector<Vec3> &pos, vector<Vec3> &vel, double t, vector<Vec3>
+    //         &g)
+    //         {
+    // 			for (Vec3 &acc: g)
+    // 				acc += Vec3(1.);
+    // 		});
+    //
     step_strategy->push_function(
-        [&sim](vector<Vec3> &pos, vector<Vec3> &vel, double t, vector<Vec3> &g)
+        [&sim](vector<Vec3> &pos, vector<Vec3> &vel, double t)
         { cout << sim.get_integration_time() << endl; });
-//
-//     step_strategy->push_function(
-//         [&sun](vector<Vec3> &pos, vector<Vec3> &vel, double t, vector<Vec3> &g)
-//         {
-//             for (Vec3 &p : pos)
-//                 cout << p << endl;
-//         });
+    //
+    //     step_strategy->push_function(
+    //         [&sun](vector<Vec3> &pos, vector<Vec3> &vel, double t,
+    //         vector<Vec3> &g)
+    //         {
+    //             for (Vec3 &p : pos)
+    //                 cout << p << endl;
+    //         });
 
 
     sim.run();

@@ -1,5 +1,4 @@
 #include "Simulation.h"
-#include "Strategy.h"
 
 using namespace std;
 
@@ -28,25 +27,7 @@ Particle Simulation::create_particle(StateVector sv)
 	return particle;
 }
 
-void Simulation::set_force_strategy(std::shared_ptr<Strategy> strategy)
-{
-	force_strategy = strategy;
-	force_strategy->set_context(this);
-}
 
-
-void Simulation::set_step_strategy(std::shared_ptr<Strategy> strategy)
-{
-	step_strategy = strategy;
-	step_strategy->set_context(this);
-}
-
-
-void Simulation::set_stop_strategy(std::shared_ptr<StopStrategy> strategy)
-{
-	stop_strategy = strategy;
-	stop_strategy->set_context(this);
-}
 
 
 void Simulation::run()
@@ -102,5 +83,7 @@ void Simulation::collect_integrator_results()
 }
 
 };
+
+
 
 

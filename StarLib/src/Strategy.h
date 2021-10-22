@@ -14,6 +14,8 @@ namespace StarLib
 
 class Simulation;
 
+
+
 class Strategy
 {
 public:
@@ -24,9 +26,17 @@ public:
 	void set_context(Simulation *simulation);
 	Simulation* get_context() { return context; }
 
+protected:
+	Simulation* context = nullptr;
+};
+
+
+class ForceStrategy : public Strategy
+{
+public:
     void execute(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
                          double t, std::vector<Vec3> &g);
-	Strategy* push_function(std::function<void(std::vector<Vec3> &pos,
+	ForceStrategy* push_function(std::function<void(std::vector<Vec3> &pos,
 					   std::vector<Vec3> &vel, double t, std::vector<Vec3> &g)>
 		fn);
 
@@ -39,26 +49,40 @@ protected:
 					>
 			   > functions;
 
-	Simulation* context = nullptr;
 };
 
 
+class StepStrategy : public Strategy
+{
+public:
+    void execute(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
+                         double t);
+	StepStrategy* push_function(std::function<void(std::vector<Vec3> &pos,
+					   std::vector<Vec3> &vel, double t)>
+		fn);
 
-class StopStrategy
+
+protected:
+    std::vector<
+        std::function<
+						void(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
+								double t)
+					>
+			   > functions;
+
+};
+
+
+class StopStrategy: public Strategy
 {
 public:
 	StopStrategy() {}
 	StopStrategy(Simulation *simulation);
 	~StopStrategy() {}
 
-	void set_context(Simulation *simulation);
-	Simulation* get_context() { return context; }
-
     virtual bool should_stop(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
                              double t);
-
 protected:
-	Simulation* context = nullptr;
 };
 
 

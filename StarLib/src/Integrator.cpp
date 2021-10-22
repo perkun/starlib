@@ -182,7 +182,7 @@ double Integrator::integrate(double time_delta)
         /***************************************************************************/
 
         // tu wstawiam np. kod wykrywający zbliżenie ...
-		step_strategy->execute(pos, vel, tm, f1);
+		step_strategy->execute(pos, vel, tm);
         if (stop_strategy->should_stop(pos, vel, tm))
             break;
 
