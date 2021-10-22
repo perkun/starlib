@@ -252,7 +252,7 @@ double Integrator::integrate(double time_delta, double sequence_size, int precis
                 }
 
 //                 force(y, z, tm + s * t, fj);
-				force_strategy->execute(x, v, ZERO, f1);
+				force_strategy->execute(y, z, tm + s * t, fj);
 
 
                 ++nf; /* find forces at each substep */
@@ -439,7 +439,7 @@ double Integrator::integrate(double time_delta, double sequence_size, int precis
            sequence.          */
 
 //         force(x, v, tm, f1);
-		force_strategy->execute(x, v, ZERO, f1);
+		force_strategy->execute(x, v, tm, f1);
 
 
         ++nf;
