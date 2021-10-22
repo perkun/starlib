@@ -21,9 +21,12 @@ project "simulation"
 
 	includedirs
 	{
+		"%{wks.location}/StarLib/src",
+		"%{wks.location}/StarLib/src/**",
+		"%{wks.location}/StarLib/vendor/entt",
 	}
 
-	links {}
+	links {"StarLib", "gtest"}
 
 	filter "configurations:Debug"
 		symbols "On"

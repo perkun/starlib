@@ -1,4 +1,5 @@
 #include "Simulation.h"
+#include "Strategy.h"
 
 using namespace std;
 
@@ -15,6 +16,37 @@ Simulation::~Simulation()
 }
 
 
+Particle Simulation::create_particle(StateVector sv)
+{
+	Particle particle(registry.create(), &registry);
+
+	// add default components
+	particle.add_component<StateComponent>(sv);
+
+	particle_order.push_back(particle);
+
+	return particle;
+}
+
+void Simulation::set_force_strategy(std::shared_ptr<Strategy> strategy)
+{
+	force_strategy = strategy;
+	force_strategy->set_context(this);
+}
+
+
+void Simulation::set_step_strategy(std::shared_ptr<Strategy> strategy)
+{
+	step_strategy = strategy;
+	step_strategy->set_context(this);
+}
+
+
+void Simulation::set_stop_strategy(std::shared_ptr<StopStrategy> strategy)
+{
+	stop_strategy = strategy;
+	stop_strategy->set_context(this);
+}
 
 
 void Simulation::run()
@@ -30,59 +62,45 @@ double Simulation::get_integration_time()
 	return integrator->get_integration_time();
 }
 
-BodyStore Simulation::get_results()
-{
-	return integrated_body_store;
-}
-
-
-
-
 void Simulation::prep_integrator()
 {
+	integrator = make_shared<Integrator>(EQ_CLASS::SECOND_DERIVATIVE);
+	integrator->sequence_size = 0.001;
+	integrator->precision = 14;
+
+	integrator->force_strategy = force_strategy;
+	integrator->step_strategy = step_strategy;
+	integrator->stop_strategy = stop_strategy;
+
 	set_integrator_initial_data();
+}
+
+Particle& Simulation::get_particle(int i)
+{
+	return particle_order[i];
 }
 
 
 void Simulation::set_integrator_initial_data()
 {
-    // convert BodyStore to integrator pos & vel vectors
-
-    BodyStoreConverter conv;
-
-    integrator->set_state(
-        conv.get_collection_of<Vec3>(conv.get_position, body_store),
-        conv.get_collection_of<Vec3>(conv.get_velocitiy, body_store),
-        conv.get_collection_of<double>(conv.get_mass, body_store));
+    for (Particle &particle : particle_order)
+    {
+		StateComponent &sc = particle.get_component<StateComponent>();
+        integrator->pos.push_back(sc.state.position);
+        integrator->vel.push_back(sc.state.velocity);
+    }
 }
 
 void Simulation::run_integrator()
 {
-	integrator->integrate(time_arrow * duration, sequence_size, precision);
+	integrator->integrate(time_arrow * duration);
 }
 
 void Simulation::collect_integrator_results()
 {
-	vector<Body> bodies;
-	bodies.reserve(integrator->positions.size());
-
-	for (int i = 0; i < integrator->positions.size(); i++)
-	{
-
-		bodies.emplace_back(
-				Body{"tmp",
-					integrator->masses[i],
-					StateVector(
-						integrator->positions[i],
-						integrator->velocities[i],
-						integrator->get_integration_time())}
-				);
-	}
-
-	integrated_body_store.clear();
-	integrated_body_store.add_group("tmp", bodies);
-	BodyStoreConverter::copy_metadata(body_store, integrated_body_store);
 
 }
 
 };
+
+

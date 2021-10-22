@@ -7,12 +7,13 @@
 #include <string>
 #include <memory>
 #include "starlibmath.h"
-#include "Strategy.h"
 
 
 namespace StarLib
 {
 
+class Strategy;
+class StopStrategy;
 
 enum EQ_CLASS
 {
@@ -33,15 +34,16 @@ public:
     Integrator(EQ_CLASS nclass) : nclass(nclass) { }
     ~Integrator() { }
 
-    double integrate(double time_delta, double sequence_size, int precision);
-    void set_state(const std::vector<Vec3> &pos, const std::vector<Vec3> &vel,
-                   const std::vector<double> &m);
 
-    std::vector<Vec3> positions;
-    std::vector<Vec3> velocities;
-    std::vector<double> masses;
+	double sequence_size = 0.001;
+	int precision = 14;
 
-    int num_bodies = 0;
+    double integrate(double time_delta);
+
+    std::vector<Vec3> pos;
+    std::vector<Vec3> vel;
+
+//     int num_bodies = 0;
     int iteration = 0;
 
     const EQ_CLASS nclass; // class of the problem for ra15
@@ -51,9 +53,10 @@ public:
         return tm;
     }
 
-protected:
     std::shared_ptr<Strategy> force_strategy, step_strategy;
     std::shared_ptr<StopStrategy> stop_strategy;
+
+protected:
     double tm;
 };
 }

@@ -1,4 +1,5 @@
 #include "Integrator.h"
+#include "Strategy.h"
 
 namespace StarLib
 {
@@ -12,23 +13,13 @@ static double HALF = 0.5;
 static double SR = 1.4;
 
 
-void Integrator::set_state(const std::vector<Vec3> &pos,
-						   const std::vector<Vec3> &vel,
-						   const std::vector<double> &m)
+double Integrator::integrate(double time_delta)
 {
-	positions = pos;
-	velocities = vel;
-	masses = m;
-}
-
-
-
-double Integrator::integrate(double time_delta, double sequence_size, int precision)
-{
-    ASSERT(positions.size() == velocities.size(),
+    ASSERT(pos.size() == vel.size(),
            "Initial vectors are of different size");
-    ASSERT(positions.size() == num_bodies,
-           "number of bodies does not match the size of positions");
+//     ASSERT(pos.size() == num_bodies,
+//            "number of bodies does not match the size of positions");
+	int num_bodies = pos.size();
 
     int nf; /* number of force calls  (out)       */
 
@@ -38,10 +29,8 @@ double Integrator::integrate(double time_delta, double sequence_size, int precis
         e[7][num_equations], bd[7][num_equations], w[7], u[7], pw, dir, w1, ss,
         tp, s, t, t2, tval, q, q2, q3, q4, temp, gk, hv = 0.0;
 
-    std::vector<Vec3> f1(num_bodies), fj(num_bodies), y(num_bodies), z(num_bodies),
-        x, v;
-    x = positions;
-    v = velocities;
+    std::vector<Vec3> f1(num_bodies), fj(num_bodies), y(num_bodies),
+        z(num_bodies);
 
 
     int nw[] = {0, 0, 1, 3, 6, 10, 15, 21};
@@ -94,7 +83,7 @@ double Integrator::integrate(double time_delta, double sequence_size, int precis
         int idx = (int)(k / 3.0);
         int idy = k % 3;
         if (ncl)
-            v[idx][idy] = ZERO;
+            vel[idx][idy] = ZERO;
         for (l = 0; l < 7; ++l)
         {
             bd[l][k] = ZERO;
@@ -160,8 +149,8 @@ double Integrator::integrate(double time_delta, double sequence_size, int precis
             ni = 6; /* number of iterations */
             tm = ZERO;
 
-//             force(x, v, ZERO, f1);
-			force_strategy->execute(x, v, ZERO, f1);
+            //             force(x, v, ZERO, f1);
+            force_strategy->execute(pos, vel, ZERO, f1);
 
             ++nf;
         }
@@ -193,8 +182,9 @@ double Integrator::integrate(double time_delta, double sequence_size, int precis
         /***************************************************************************/
 
         // tu wstawiam np. kod wykrywający zbliżenie ...
-		if (stop_strategy->should_stop(x, v, tm))
-			break;
+		step_strategy->execute(pos, vel, tm, f1);
+        if (stop_strategy->should_stop(pos, vel, tm))
+            break;
 
         /***************************************************************************/
         for (m = 0; m < ni;
@@ -214,8 +204,8 @@ double Integrator::integrate(double time_delta, double sequence_size, int precis
                     int idx = (int)(k / 3.0);
                     int idy = k % 3;
                     y[idx][idy] =
-                        x[idx][idy] +
-                        q * (t * v[idx][idy] +
+                        pos[idx][idy] +
+                        q * (t * vel[idx][idy] +
                              t2 * s *
                                  (f1[idx][idy] * w1 +
                                   s * (w[0] * b[0][k] +
@@ -235,7 +225,7 @@ double Integrator::integrate(double time_delta, double sequence_size, int precis
                     if (npq)
                         continue;
                     z[idx][idy] =
-                        v[idx][idy] +
+                        vel[idx][idy] +
                         s * t *
                             (f1[idx][idy] +
                              s * (u[0] * b[0][k] +
@@ -248,8 +238,8 @@ double Integrator::integrate(double time_delta, double sequence_size, int precis
                                                                b[6][k])))))));
                 }
 
-//                 force(y, z, tm + s * t, fj);
-				force_strategy->execute(y, z, tm + s * t, fj);
+                //                 force(y, z, tm + s * t, fj);
+                force_strategy->execute(y, z, tm + s * t, fj);
 
 
                 ++nf; /* find forces at each substep */
@@ -404,17 +394,18 @@ double Integrator::integrate(double time_delta, double sequence_size, int precis
         {
             int idx = (int)(k / 3.0);
             int idy = k % 3;
-            x[idx][idy] = x[idx][idy] + v[idx][idy] * t +
-                          t2 * (f1[idx][idy] * w1 +
-                                (b[0][k] * w[0] +
-                                 (b[1][k] * w[1] +
-                                  (b[2][k] * w[2] +
-                                   (b[3][k] * w[3] +
-                                    (b[4][k] * w[4] +
-                                     (b[5][k] * w[5] + (b[6][k] * w[6]))))))));
+            pos[idx][idy] =
+                pos[idx][idy] + vel[idx][idy] * t +
+                t2 * (f1[idx][idy] * w1 +
+                      (b[0][k] * w[0] +
+                       (b[1][k] * w[1] +
+                        (b[2][k] * w[2] +
+                         (b[3][k] * w[3] +
+                          (b[4][k] * w[4] +
+                           (b[5][k] * w[5] + (b[6][k] * w[6]))))))));
             if (!ncl)
-                v[idx][idy] =
-                    v[idx][idy] +
+                vel[idx][idy] =
+                    vel[idx][idy] +
                     t * (f1[idx][idy] +
                          (b[0][k] * u[0] +
                           (b[1][k] * u[1] +
@@ -435,8 +426,8 @@ double Integrator::integrate(double time_delta, double sequence_size, int precis
            exactly cover the integration span.  Nper = TRUE for the last
            sequence.          */
 
-//         force(x, v, tm, f1);
-		force_strategy->execute(x, v, tm, f1);
+        //         force(x, v, tm, f1);
+        force_strategy->execute(pos, vel, tm, f1);
 
 
         ++nf;
@@ -493,4 +484,4 @@ double Integrator::integrate(double time_delta, double sequence_size, int precis
 }
 
 
-}
+} // namespace StarLib

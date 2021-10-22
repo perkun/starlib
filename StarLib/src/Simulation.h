@@ -4,9 +4,10 @@
 #include <iostream>
 #include <memory>
 #include <stdio.h>
-#include "Bodies.h"
-#include "BodyStoreConverter.h"
 #include "Integrator.h"
+#include "Particle.h"
+#include "entt.hpp"
+#include "Components.h"
 
 namespace StarLib
 {
@@ -24,18 +25,29 @@ public:
     Simulation();
     ~Simulation();
 
+	void set_duration_and_direction(double duration, double time_arrow)
+	{
+		this->duration = duration;
+		this->time_arrow = time_arrow;
+	}
+	Particle create_particle(StateVector sv = StateVector());
+
+	void set_force_strategy(std::shared_ptr<Strategy> strategy);
+	void set_step_strategy(std::shared_ptr<Strategy> strategy);
+	void set_stop_strategy(std::shared_ptr<StopStrategy> strategy);
+
 	void run();
 	double get_integration_time();
-	BodyStore get_results();
+
+	Particle& get_particle(int i);
+
+private:
+    std::shared_ptr<Integrator> integrator = nullptr;
+
+    std::shared_ptr<Strategy> force_strategy, step_strategy;
+    std::shared_ptr<StopStrategy> stop_strategy;
 
     double duration;
-
-    // data for integration
-	BodyStore body_store;
-private:
-    std::shared_ptr<Integrator> integrator;
-	double sequence_size = 0.001;
-	int precision = 14;
 	double time_arrow = TimeArrow::FUTURE;
 
 	void prep_integrator();
@@ -43,8 +55,9 @@ private:
 	void run_integrator();
 	void collect_integrator_results();
 
-	BodyStore integrated_body_store;
+	entt::registry registry;
 
+	std::vector<Particle> particle_order;
 };
 
 } // namespace StarLib

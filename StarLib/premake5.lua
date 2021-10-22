@@ -5,7 +5,7 @@ project "StarLib"
 	kind "StaticLib"
 
 	language "C++"
-	cppdialect "C++11"
+	cppdialect "C++17"
 	--buildoptions { "-pthread" }
 
 	targetdir ("bin/" .. outputdir)
@@ -23,6 +23,7 @@ project "StarLib"
 	{
 		"src",
 		"src/**",
+ 		"vendor/entt",
 	}
 
 	links {}
