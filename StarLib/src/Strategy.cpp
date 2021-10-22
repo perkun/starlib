@@ -46,6 +46,15 @@ void StepStrategy::execute(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
         fn(pos, vel, t);
 }
 
+void StepStrategy::print_mass(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t)
+{
+	int num_bodies = pos.size();
+	for (int i = 0; i < num_bodies; i++)
+	{
+		double mass = context->get_particle(i).get_component<MassComponent>().mass;
+		std::cout << "body " << i << ", mass: " << mass << std::endl;
+	}
+}
 
 StopStrategy::StopStrategy(Simulation *simulation) { set_context(simulation); }
 

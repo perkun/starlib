@@ -28,6 +28,7 @@ public:
 
 protected:
 	Simulation* context = nullptr;
+
 };
 
 
@@ -49,6 +50,9 @@ protected:
 					>
 			   > functions;
 
+	// functions that can be attached to specific strategy
+	void dummy(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t, std::vector<Vec3> &g);
+
 };
 
 
@@ -61,6 +65,12 @@ public:
 					   std::vector<Vec3> &vel, double t)>
 		fn);
 
+	template <typename Func>
+	void add_func(Func fn)
+	{
+		functions.push_back(fn);
+	}
+
 
 protected:
     std::vector<
@@ -69,6 +79,9 @@ protected:
 								double t)
 					>
 			   > functions;
+
+public:
+	void print_mass(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t);
 
 };
 

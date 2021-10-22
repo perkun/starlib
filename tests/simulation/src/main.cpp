@@ -6,26 +6,26 @@
 using namespace std;
 using namespace StarLib;
 
-class MyStepStrategy : public StepStrategy
-{
-public:
-    MyStepStrategy()
-    {
-        push_function(
-            [=](vector<Vec3> &pos, vector<Vec3> &vel, double t)
-            {
-                for (int i = 0; i < pos.size(); i++)
-                {
-                    Particle &particle = context->get_particle(i);
-                    cout << "name : "
-                         << particle.get_component<NameComponent>().name
-                         << "\tmass: "
-                         << particle.get_component<MassComponent>().mass
-                         << endl;
-                }
-            });
-    }
-};
+// class MyStepStrategy : public StepStrategy
+// {
+// public:
+//     MyStepStrategy()
+//     {
+//         push_function(
+//             [=](vector<Vec3> &pos, vector<Vec3> &vel, double t)
+//             {
+//                 for (int i = 0; i < pos.size(); i++)
+//                 {
+//                     Particle &particle = context->get_particle(i);
+//                     cout << "name : "
+//                          << particle.get_component<NameComponent>().name
+//                          << "\tmass: "
+//                          << particle.get_component<MassComponent>().mass
+//                          << endl;
+//                 }
+//             });
+//     }
+// };
 
 
 int main(int argc, char *argv[])
@@ -47,8 +47,8 @@ int main(int argc, char *argv[])
 
 
     shared_ptr<ForceStrategy> force_strategy = sim.create_force_strategy();
-    shared_ptr<StepStrategy> step_strategy =
-        sim.create_step_strategy<MyStepStrategy>();
+    shared_ptr<StepStrategy> step_strategy = sim.create_step_strategy();
+//     shared_ptr<StepStrategy> step_strategy = sim.create_step_strategy<MyStepStrategy>();
 //     shared_ptr<StopStrategy> stop_strategy = sim.create_stop_strategy();
 
 
@@ -75,6 +75,15 @@ int main(int argc, char *argv[])
     step_strategy->push_function(
         [&sim](vector<Vec3> &pos, vector<Vec3> &vel, double t)
         { cout << sim.get_integration_time() << endl; });
+
+// 	std::function<int(double)> fnCaller = std::bind(&A::fn, &anInstance, std::placeholders::_1);
+
+// 	std::function<void(vector<Vec3> &pos, vector<Vec3> &vel, double t)> fn =
+// 		std::bind(&StepStrategy::print_mass, step_strategy, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+// 	step_strategy->push_function(fn);
+
+
+	step_strategy->add_func(StepStrategy::print_mass);
     //
     //     step_strategy->push_function(
     //         [&sun](vector<Vec3> &pos, vector<Vec3> &vel, double t,
