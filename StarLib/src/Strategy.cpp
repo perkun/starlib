@@ -24,6 +24,9 @@ ForceStrategy *ForceStrategy::push_function(
 void ForceStrategy::execute(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
                             double t, std::vector<Vec3> &g)
 {
+	for (Vec3 &acc: g)
+		acc = Vec3(0.);
+
     for (auto fn : functions)
         fn(pos, vel, t, g);
 }
