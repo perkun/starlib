@@ -14,14 +14,13 @@ public:
     Swarm();
     ~Swarm();
 
-	void push_particle(Particle p)
-	{
-		particles.push_back(p);
-	}
+    void push_particle(Particle p) { particles.push_back(p); }
 
+    std::vector<Particle>::iterator begin() { return particles.begin(); }
+    std::vector<Particle>::iterator end() { return particles.end(); }
 
 private:
-	std::vector<Particle> particles;
+    std::vector<Particle> particles;
 };
 }
 

@@ -46,6 +46,8 @@ TEST(Rosettes, SevenBodiesCentralMass)
     EXPECT_LE(fabs(state.velocity.y - -0.0093683095846389),
               PRECISION);
     EXPECT_LE(fabs(state.velocity.z - 0.0), PRECISION);
+
+
 }
 
 
