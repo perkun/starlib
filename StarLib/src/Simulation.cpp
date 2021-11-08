@@ -5,7 +5,7 @@ using namespace std;
 namespace StarLib
 {
 
-Simulation::Simulation()
+Simulation::Simulation(double grav_const) : GRAV_CONSTANT(grav_const)
 {
 	create_force_strategy();
 	create_step_strategy();
@@ -30,6 +30,16 @@ Particle Simulation::create_particle(StateVector sv)
 	return particle;
 }
 
+
+Swarm Simulation::create_swarm(SwarmBuilder &builder)
+{
+	vector<Particle> particles;
+	for (int i = 0; i < builder.get_num_particles(); i++)
+	{
+		particles.push_back(create_particle());
+	}
+	return builder.setup(particles);
+}
 
 
 
@@ -59,10 +69,6 @@ void Simulation::prep_integrator()
 	set_integrator_initial_data();
 }
 
-Particle& Simulation::get_particle(int i)
-{
-	return particle_order[i];
-}
 
 
 void Simulation::set_integrator_initial_data()
@@ -80,13 +86,28 @@ void Simulation::run_integrator()
 	integrator->integrate(time_arrow * duration);
 }
 
+
 void Simulation::collect_integrator_results()
 {
+    for (int i = 0; i < get_num_particles(); i++)
+    {
+        StateVector &state =
+            get_particle(i).get_component<StateComponent>().state;
+		state.position = integrator->pos[i];
+		state.velocity = integrator->vel[i];
+		state.time = integrator->get_integration_time();
+	}
+}
 
+
+Particle& Simulation::get_particle(int i)
+{
+	return particle_order[i];
+}
+
+int Simulation::get_num_particles()
+{
+	return particle_order.size();
 }
 
 };
-
-
-
-

@@ -6,6 +6,14 @@
 using namespace std;
 using namespace StarLib;
 
+
+void func1(vector<Vec3> &pos, vector<Vec3> &vel, double t, vector<Vec3> &g)
+{
+	for (Vec3 &acc : g)
+		acc = Vec3(0.0001, 0.0001, 0.);
+}
+
+
 // class MyStepStrategy : public StepStrategy
 // {
 // public:
@@ -31,7 +39,7 @@ using namespace StarLib;
 
 int main(int argc, char *argv[])
 {
-    Simulation sim;
+    Simulation sim(1.0);
 
     sim.set_duration_and_direction(10, TimeArrow::FUTURE);
 
@@ -53,12 +61,14 @@ int main(int argc, char *argv[])
     shared_ptr<StopStrategy> stop_strategy = sim.create_stop_strategy();
 
 
-    force_strategy->push_lambda(
-        [](vector<Vec3> &pos, vector<Vec3> &vel, double t, vector<Vec3> &g)
-        {
-            for (Vec3 &acc : g)
-                acc = Vec3(0.0001, 0.0001, 0.);
-        });
+//     force_strategy->push_lambda(
+//         [](vector<Vec3> &pos, vector<Vec3> &vel, double t, vector<Vec3> &g)
+//         {
+//             for (Vec3 &acc : g)
+//                 acc = Vec3(0.0001, 0.0001, 0.);
+//         });
+
+	force_strategy->push_lambda(func1);
 
     step_strategy->push_lambda(
         [&sim](vector<Vec3> &pos, vector<Vec3> &vel, double t)

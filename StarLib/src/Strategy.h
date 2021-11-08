@@ -20,8 +20,7 @@ class Particle;
 class Strategy
 {
 public:
-	Strategy() {}
-    Strategy(Simulation *simulation);
+    Strategy(Simulation *simulation, double grav_const);
     ~Strategy() { }
 
 	void set_context(Simulation *simulation);
@@ -31,6 +30,7 @@ public:
 
 protected:
 	Simulation* context = nullptr;
+	const double GRAV_CONSTANT;
 
 };
 
@@ -38,43 +38,48 @@ protected:
 class ForceStrategy : public Strategy
 {
 public:
-    void execute(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
-                         double t, std::vector<Vec3> &g);
-	ForceStrategy* push_lambda(std::function<void(std::vector<Vec3> &pos,
-					   std::vector<Vec3> &vel, double t, std::vector<Vec3> &g)>
-		fn)
-	{
-		functions.push_back(fn);
-		return this;
-	}
+    ForceStrategy(Simulation *simulation, double grav_const)
+        : Strategy(simulation, grav_const)
+    {
+    }
 
-	template <typename Func>
-	ForceStrategy* push_member_func(Func fn)
-	{
-		auto binded_fn = std::bind(fn, this, std::placeholders::_1,
-								   std::placeholders::_2,
-								   std::placeholders::_3,
-								   std::placeholders::_4);
+    void execute(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t,
+                 std::vector<Vec3> &g);
+    ForceStrategy *push_lambda(
+        std::function<void(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
+                           double t, std::vector<Vec3> &g)>
+            fn)
+    {
+        functions.push_back(fn);
+        return this;
+    }
 
-		functions.push_back(binded_fn);
-		return this;
-	}
+    template <typename Func> ForceStrategy *push_member_func(Func fn)
+    {
+        auto binded_fn =
+            std::bind(fn, this, std::placeholders::_1, std::placeholders::_2,
+                      std::placeholders::_3, std::placeholders::_4);
+
+        functions.push_back(binded_fn);
+        return this;
+    }
 
 
 protected:
     std::vector<
-        std::function<
-						void(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
-								double t, std::vector<Vec3> &g)
-					>
-			   > functions;
+        std::function<void(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
+                           double t, std::vector<Vec3> &g)>>
+        functions;
 
 public:
-	/** predefined functions, that can be pushed by client */
-	void dummy(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t, std::vector<Vec3> &g)
-	{
-		std::cout << "Dummy force function \n";
-	}
+    /** predefined functions, that can be pushed by client */
+    void dummy(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t,
+               std::vector<Vec3> &g)
+    {
+        std::cout << "Dummy force function \n";
+    }
+
+
 
 };
 
@@ -82,6 +87,10 @@ public:
 class StepStrategy : public Strategy
 {
 public:
+    StepStrategy(Simulation *simulation, double grav_const)
+        : Strategy(simulation, grav_const)
+    {
+    }
     void execute(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t);
 
 	StepStrategy* push_lambda(std::function<void(std::vector<Vec3> &pos,
@@ -122,8 +131,10 @@ public:
 class StopStrategy: public Strategy
 {
 public:
-	StopStrategy() {}
-	StopStrategy(Simulation *simulation);
+    StopStrategy(Simulation *simulation, double grav_const)
+        : Strategy(simulation, grav_const)
+    {
+    }
 	~StopStrategy() {}
 
     virtual bool should_stop(std::vector<Vec3> &pos, std::vector<Vec3> &vel,

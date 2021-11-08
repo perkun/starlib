@@ -9,6 +9,9 @@
 #include "entt.hpp"
 #include "Components.h"
 #include "Strategy.h"
+#include "Swarm.h"
+#include "SwarmBuilder.h"
+
 
 namespace StarLib
 {
@@ -23,7 +26,7 @@ struct TimeArrow
 class Simulation
 {
 public:
-    Simulation();
+    Simulation(double grav_const);
     ~Simulation();
 
     void set_duration_and_direction(double duration, double time_arrow)
@@ -32,12 +35,13 @@ public:
         this->time_arrow = time_arrow;
     }
     Particle create_particle(StateVector sv = StateVector());
+	Swarm create_swarm(SwarmBuilder &builder);
 
 
     template <typename S>
-    std::shared_ptr<ForceStrategy> create_force_strategy();
-    template <typename S> std::shared_ptr<StepStrategy> create_step_strategy();
-    template <typename S> std::shared_ptr<StopStrategy> create_stop_strategy();
+    std::shared_ptr<S> create_force_strategy();
+    template <typename S> std::shared_ptr<S> create_step_strategy();
+    template <typename S> std::shared_ptr<S> create_stop_strategy();
 
     std::shared_ptr<ForceStrategy> create_force_strategy()
     {
@@ -57,8 +61,8 @@ public:
 
     void run();
     double get_integration_time();
-
     Particle &get_particle(int i);
+	int get_num_particles();
 
 private:
     std::shared_ptr<Integrator> integrator = nullptr;
@@ -78,33 +82,35 @@ private:
     entt::registry registry;
 
     std::vector<Particle> particle_order;
+
+	const double GRAV_CONSTANT;
 };
 
 
 template <typename S>
-std::shared_ptr<ForceStrategy> Simulation::create_force_strategy()
+std::shared_ptr<S> Simulation::create_force_strategy()
 {
-	force_strategy = std::make_shared<S>();
-	force_strategy->set_context(this);
-	return force_strategy;
+	std::shared_ptr<S> strategy = std::make_shared<S>(this, GRAV_CONSTANT);
+	force_strategy = std::static_pointer_cast<ForceStrategy>(strategy);
+	return strategy;
 }
 
 
 template <typename S>
-std::shared_ptr<StepStrategy> Simulation::create_step_strategy()
+std::shared_ptr<S> Simulation::create_step_strategy()
 {
-	step_strategy = std::make_shared<S>();
-	step_strategy->set_context(this);
-	return step_strategy;
+	std::shared_ptr<S> strategy = std::make_shared<S>(this, GRAV_CONSTANT);
+	step_strategy = std::static_pointer_cast<StepStrategy>(strategy);
+	return strategy;
 }
 
 
 template <typename S>
-std::shared_ptr<StopStrategy> Simulation::create_stop_strategy()
+std::shared_ptr<S> Simulation::create_stop_strategy()
 {
-	stop_strategy = std::make_shared<S>();
-	stop_strategy->set_context(this);
-	return stop_strategy;
+	std::shared_ptr<S> strategy = std::make_shared<S>(this, GRAV_CONSTANT);
+	stop_strategy = std::static_pointer_cast<StopStrategy>(strategy);
+	return strategy;
 }
 
 } // namespace StarLib
