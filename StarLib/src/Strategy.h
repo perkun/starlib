@@ -43,6 +43,8 @@ public:
     {
     }
 
+    void set_central_mass(double m) { central_mass = m; }
+
     void execute(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t,
                  std::vector<Vec3> &g);
     ForceStrategy *push_lambda(
@@ -54,14 +56,13 @@ public:
         return this;
     }
 
-    template <typename Func> ForceStrategy *push_member_func(Func fn)
+    template <typename Func> void push_member_func(Func fn)
     {
         auto binded_fn =
             std::bind(fn, this, std::placeholders::_1, std::placeholders::_2,
                       std::placeholders::_3, std::placeholders::_4);
 
         functions.push_back(binded_fn);
-        return this;
     }
 
 
@@ -70,6 +71,8 @@ protected:
         std::function<void(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
                            double t, std::vector<Vec3> &g)>>
         functions;
+
+    double central_mass = 0;
 
 public:
     /** predefined functions, that can be pushed by client */
@@ -80,7 +83,8 @@ public:
     }
 
 
-
+    void relative_nbody(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
+                        double t, std::vector<Vec3> &g);
 };
 
 
