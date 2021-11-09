@@ -78,6 +78,44 @@ void ForceStrategy::relative_nbody(std::vector<Vec3> &pos, std::vector<Vec3> &ve
 
 }
 
+void ForceStrategy::nbody(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t,
+		   std::vector<Vec3> &g)
+{
+    // calculate distances first:
+    int num_bodies = context->get_num_particles();
+    Vec3 distances[num_bodies][num_bodies];
+    for (int i = 0; i < num_bodies; i++)
+    {
+        for (int k = i + 1; k < num_bodies; k++)
+        {
+            Vec3 dif = pos[k] - pos[i];
+            double len = dif.length();
+            dif /= len * len * len;
+
+            distances[i][k] = dif;
+            distances[k][i] = -1. * dif;
+        }
+    }
+
+    for (int i = 0; i < num_bodies; i++)
+    {
+        Vec3 acc(0.);
+        for (int k = 0; k < num_bodies; k++)
+        {
+            if (i == k)
+                continue;
+
+            double mass_k =
+                context->get_particle(k).get_component<MassComponent>().mass;
+            if (mass_k == 0.0)
+                continue;
+
+            acc += distances[i][k] * mass_k;
+        }
+
+        g[i] = acc * GRAV_CONSTANT;
+    }
+}
 
 
 

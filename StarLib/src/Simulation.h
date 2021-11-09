@@ -60,6 +60,7 @@ public:
 
 
     void run();
+    void run_constant_step(double sequence_size);
     double get_integration_time();
     Particle &get_particle(int i);
 	int get_num_particles();
@@ -74,7 +75,7 @@ private:
     double duration;
     double time_arrow = TimeArrow::FUTURE;
 
-    void prep_integrator();
+    void prep_integrator(double sequence_size = 0.001, int precision = 14);
     void set_integrator_initial_data();
     void run_integrator();
     void collect_integrator_results();

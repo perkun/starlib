@@ -51,16 +51,26 @@ void Simulation::run()
 	collect_integrator_results();
 }
 
+void Simulation::run_constant_step(double sequence_size)
+{
+	prep_integrator(sequence_size, -14);
+	run_integrator();
+	collect_integrator_results();
+}
+
+
+
 double Simulation::get_integration_time()
 {
 	return integrator->get_integration_time();
 }
 
-void Simulation::prep_integrator()
+void Simulation::prep_integrator(double sequence_size, int precision)
 {
 	integrator = make_shared<Integrator>(EQ_CLASS::SECOND_DERIVATIVE);
-	integrator->sequence_size = 0.001;
-	integrator->precision = 14;
+
+	integrator->sequence_size = sequence_size;
+	integrator->precision = precision;
 
 	integrator->force_strategy = force_strategy;
 	integrator->step_strategy = step_strategy;
@@ -70,9 +80,10 @@ void Simulation::prep_integrator()
 }
 
 
-
 void Simulation::set_integrator_initial_data()
 {
+	integrator->pos.clear();
+	integrator->vel.clear();
     for (Particle &particle : particle_order)
     {
 		StateComponent &sc = particle.get_component<StateComponent>();
@@ -80,6 +91,7 @@ void Simulation::set_integrator_initial_data()
         integrator->vel.push_back(sc.state.velocity);
     }
 }
+
 
 void Simulation::run_integrator()
 {

@@ -85,6 +85,8 @@ public:
 
     void relative_nbody(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
                         double t, std::vector<Vec3> &g);
+    void nbody(std::vector<Vec3> &pos, std::vector<Vec3> &vel,
+                        double t, std::vector<Vec3> &g);
 };
 
 
