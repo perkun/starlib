@@ -44,13 +44,17 @@ namespace UNITS
 						GYEAR = YEAR * 1.0e9,
 						CALENDAR_YEAR = 365.2425,   // calendar year
 						JULIAN_YEAR = 365.25,
+						SEC = 1. / (DAY * 24. * 3600.),
 
 
 						// distance
 						PARSEC = 206264.8062470963632222,
+						METER = 1./149597870700.,
+						KM = 1./149597870.700,
 
 						// velocity
-						PARSEC_MYRS = PARSEC / (1.0e6 * YEAR);
+						PARSEC_MYRS = PARSEC / (1.0e6 * YEAR),
+						KM_S = KM / SEC;
 
 
 
