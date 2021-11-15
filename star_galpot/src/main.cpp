@@ -82,11 +82,19 @@ int main(int argc, char *argv[])
          << endl;
 
     // calculate angle between star position and the reference plane
+	// go from galactic to ecliptic ref. frame
+
+
+
     double approach_angle =
         (M_PI / 2) - acos(dot(Vec3(0, 0, 1), normalize(rel_pos)));
     printf("approach angle (between reference plane and star position) :\n "
            "%.16lf rad, %.16lf deg\n",
            approach_angle, approach_angle / UNITS::DEG);
+
+
+	double gal_long = atan2(rel_pos.y, rel_pos.x);
+	double ga_lat = asin(rel_pos.z / rel_pos.length());
 
     // P0230     -44.8490007837     +60.9378075571      -1.0510946256
     // -16.0744115985    +21.7529716101    -0.3661435984    1.0800
