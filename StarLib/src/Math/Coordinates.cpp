@@ -4,7 +4,6 @@ namespace StarLib
 {
 
 
-static double eps = (23. + 26. / 60 + 21.406 / 3600) * UNITS::DEG;
 
 
 Vec3 galactic_to_equatorial(Vec3 vec)
@@ -49,13 +48,13 @@ SphericalCoords equatorial_to_galactic(SphericalCoords sph)
 
 Vec3 equatorial_to_ecliptic(Vec3 vec)
 {
-	return rotate_x(vec, -eps);
+	return rotate_x(vec, -EclipticCoordinateSystem::earth_axis_tilt);
 }
 
 
 Vec3 ecliptic_to_equatiorial(Vec3 vec)
 {
-	return rotate_x(vec, eps);
+	return rotate_x(vec, EclipticCoordinateSystem::earth_axis_tilt);
 }
 
 

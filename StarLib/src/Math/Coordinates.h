@@ -10,6 +10,13 @@
 namespace StarLib
 {
 
+struct EclipticCoordinateSystem
+{
+    static constexpr double earth_axis_tilt =
+        (23. + 26. / 60 + 21.406 / 3600) * UNITS::DEG;
+};
+
+
 struct GalacticCoordinateSystem
 {
     /* values from Liu et al. 2011 (equation 10)
