@@ -35,7 +35,7 @@ Swarm PlanetBuilder::setup(std::vector<Particle> particles)
 
         auto states = IO::parse_horizons_vectors(cfg_planet.horizon_filename);
 		p.add_component<NameComponent>(cfg_planet.name);
-		p.add_component<MassComponent>(1. + masses[cfg_planet.name]);
+		p.add_component<MassComponent>(masses[cfg_planet.name]);
 		p.get_component<StateComponent>().state = states.front();
 
 		swarm.push_particle(p);

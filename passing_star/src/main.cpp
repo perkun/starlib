@@ -33,7 +33,7 @@ int main(int argc, char *argv[]) {
 //   Swarm kuiper_belt = sim.create_swarm(kuiper_belt_builder);
 
 
-  sim.set_duration_and_direction(100. * UNITS::YEAR, TimeArrow::FUTURE);
+  sim.set_duration_and_direction(300. * UNITS::YEAR, TimeArrow::FUTURE);
   sim.run();
 
   for (Particle &planet: planets)
