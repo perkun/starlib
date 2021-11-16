@@ -1,0 +1,16 @@
+jd: 2451545.0
+seed: 123
+num_objects: 40
+q_min: 20.0
+q_max: 55.0
+e_min: 0.0
+e_max: 0.8
+i_min: 0.0
+i_max: 30.0
+omega_min: 0.0
+omega_max: 360.0
+Omega_min: 0.0
+Omega_max: 360.0
+tp_range: 4000
+mean_mass: 7e-9             # more or less pluto mass
+mass_range: 4e-9

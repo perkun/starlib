@@ -1,0 +1,30 @@
+folder: "/home/perkun/projects/starlib2/passing_star/data/"
+planets:
+  -
+    name: "mercury"
+    file: "mercury_vecs.txt"
+  -
+    name: "venus"
+    file: "venus_vecs.txt"
+  -
+      name: "earth"
+      file: "earth_vecs.txt"
+  -
+      name: "mars"
+      file: "mars_vecs.txt"
+  -
+      name: "jupiter"
+      file: "jupiter_vecs.txt"
+  -
+      name: "saturn"
+      file: "saturn_vecs.txt"
+  -
+      name: "uranus"
+      file: "uranus_vecs.txt"
+  -
+      name: "neptune"
+      file: "neptune_vecs.txt"
+  -
+      name: "pluto"
+      file: "pluto_vecs.txt"
+

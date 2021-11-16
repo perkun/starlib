@@ -4,8 +4,6 @@ namespace StarLib
 {
 
 
-
-
 Vec3 galactic_to_equatorial(Vec3 vec)
 {
     Vec3 result =

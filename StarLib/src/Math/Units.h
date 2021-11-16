@@ -27,7 +27,7 @@ namespace UNITS
 
 
 					    // BASIC UNITS
-	static constexpr double RAD = 1.0,
+    	   const double RAD = 1.0,
 						DAY = 1.0,
 						AU = 1.0,
 						MASS_SUN = 1.0,
@@ -37,7 +37,7 @@ namespace UNITS
 				 		DEG = M_PI / 180.,  // 1 deg in radians
 						ARCMIN = DEG / 60.,
 						ARCSEC = ARCMIN / 60.,
-						HOUR = DEG * 15,
+						HOUR = DEG * 15.,
 
 						// time
 						YEAR =  365.24219,  		// solar year

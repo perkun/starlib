@@ -11,4 +11,4 @@ workspace "starlib2"
 include "StarLib"
 include "star_galpot"
 include "tests"
-
+include "passing_star"

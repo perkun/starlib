@@ -12,7 +12,7 @@ namespace StarLib
 
 struct EclipticCoordinateSystem
 {
-    static constexpr double earth_axis_tilt =
+    inline static const double earth_axis_tilt =
         (23. + 26. / 60 + 21.406 / 3600) * UNITS::DEG;
 };
 
@@ -26,14 +26,14 @@ struct GalacticCoordinateSystem
 
     struct NorthGalacticPole
     {
-        static constexpr double ra =
+        inline static const double ra =
             (12 + 51. / 60. + 26.27549 / 3600) * UNITS::HOUR;
-        static constexpr double dec =
+        inline static const double dec =
             (27. + 7. / 60.0 + 41.7043 / 3600) * UNITS::DEG;
     };
 
     // position angle of the Galactic center from the equatorial pole
-    static constexpr double position_angle = 122.93191857 * UNITS::DEG;
+    inline static const double position_angle = 122.93191857 * UNITS::DEG;
 };
 
 class SphericalCoords
