@@ -82,13 +82,24 @@ void Simulation::prep_integrator(double sequence_size, int precision)
 
 void Simulation::set_integrator_initial_data()
 {
-	integrator->pos.clear();
-	integrator->vel.clear();
+    integrator->pos.clear();
+    integrator->vel.clear();
+    integrator->force_strategy->masses.clear();
     for (Particle &particle : particle_order)
     {
-		StateComponent &sc = particle.get_component<StateComponent>();
+        StateComponent &sc = particle.get_component<StateComponent>();
         integrator->pos.push_back(sc.state.position);
         integrator->vel.push_back(sc.state.velocity);
+
+        if (particle.has_component<MassComponent>())
+        {
+            integrator->force_strategy->masses.push_back(
+                particle.get_component<MassComponent>().mass);
+        }
+        else
+        {
+            integrator->force_strategy->masses.push_back(0.0);
+        }
     }
 }
 

@@ -65,6 +65,7 @@ public:
         functions.push_back(binded_fn);
     }
 
+	std::vector<double> masses;
 
 protected:
     std::vector<
