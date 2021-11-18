@@ -1,0 +1,5 @@
+approach_angle: -36.7055852574837189 # deg
+speed: 0.0153007 # au/day
+init_star_distance: 40000 # au
+final_star_distance: 40000 # au
+min_distance: 4942.55 # au
