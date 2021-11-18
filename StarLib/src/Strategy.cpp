@@ -61,17 +61,13 @@ void ForceStrategy::relative_nbody(std::vector<Vec3> &pos, std::vector<Vec3> &ve
             if (i == k)
                 continue;
 
-            double mass_k = masses[k];
-//                 context->get_particle(k).get_component<MassComponent>().mass;
-            if (mass_k == 0.0)
+            if (masses[k] == 0.0)
                 continue;
 
-            acc += (distances[i][k] - uks[k]) * mass_k;
+            acc += (distances[i][k] - uks[k]) * masses[k];
         }
         // central mass acceleration
-        double mass = masses[i];
-//             context->get_particle(i).get_component<MassComponent>().mass;
-        acc -= uks[i] * (central_mass + mass);
+        acc -= uks[i] * (central_mass + masses[i]);
 
         g[i] = acc * GRAV_CONSTANT;
     }
@@ -105,12 +101,10 @@ void ForceStrategy::nbody(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double
             if (i == k)
                 continue;
 
-            double mass_k =
-                context->get_particle(k).get_component<MassComponent>().mass;
-            if (mass_k == 0.0)
+            if (masses[k] == 0.0)
                 continue;
 
-            acc += distances[i][k] * mass_k;
+            acc += distances[i][k] * masses[k];
         }
 
         g[i] = acc * GRAV_CONSTANT;

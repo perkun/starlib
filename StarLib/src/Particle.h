@@ -98,6 +98,9 @@ public:
 	{
 		return (uint32_t)entity_handle;
 	}
+
+	int order = 0;
+
 private:
     entt::entity entity_handle = entt::null;
     entt::registry *registry_handle;

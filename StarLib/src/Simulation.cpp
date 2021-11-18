@@ -26,6 +26,7 @@ Particle Simulation::create_particle(StateVector sv)
 	particle.add_component<StateComponent>(sv);
 
 	particle_order.push_back(particle);
+	particle.order = particle_order.size() - 1;
 
 	return particle;
 }

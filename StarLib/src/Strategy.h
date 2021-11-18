@@ -44,6 +44,7 @@ public:
     }
 
     void set_central_mass(double m) { central_mass = m; }
+    double get_central_mass() { return central_mass; }
 
     void execute(std::vector<Vec3> &pos, std::vector<Vec3> &vel, double t,
                  std::vector<Vec3> &g);
