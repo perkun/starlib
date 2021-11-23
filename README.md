@@ -13,7 +13,7 @@ integration of particle motion, e.g. planets or stars.
 * yaml-cpp
 
 ```bash
-git clone ...
+git clone https://github.com/perkun/starlib.git
 cd starlib
 premake5 gmake
 make
