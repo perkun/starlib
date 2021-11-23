@@ -23,4 +23,7 @@ make config=release
 The last command compiles the optimized code without debugging symbols.
 
 
+# Usage
 
+Thake a look at the **Example** sub-project. Basic simulation is described
+there in comments. Documentation is on my list of TODOs ...
