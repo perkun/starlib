@@ -1,4 +1,4 @@
-workspace "starlib2"
+workspace "starlib"
 	architecture "x64"
 
 	configurations
@@ -12,3 +12,4 @@ include "StarLib"
 include "star_galpot"
 include "tests"
 include "passing_star"
+include "example"
