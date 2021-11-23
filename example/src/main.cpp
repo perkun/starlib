@@ -18,12 +18,12 @@ int main()
     Simulation sim(G);
 
 
-    /* Ok, now we need to add some particles to integrate. Particles are created
+    /* We need to add some particles to integrate. Particles are created
      * via Simulation, and implement Entity-Component-System. That means that
-     * each particle can have any nymber of classes - components - asssiated
+     * each particle can have any number of classes - components - associated
      * with them. By default, they have StateComponent, which has state member,
      * which is StateVector (position, velocity and time). When running the
-     * simulation, all posiotions and velocities are copied to the vectors of
+     * simulation, all positions and velocities are copied to the vectors of
      * Vec3's: pos and vel (the ones you see in ForceStrategy lambda function).
      * Also, if a particle has MassComponent, the values are copied to the
      * masses vector, available in force function. Any other components are
@@ -54,7 +54,7 @@ int main()
     auto step_strategy = sim.create_step_strategy();
     auto stop_strategy = sim.create_stop_strategy();
 
-    /* you can push any number of functions to each strategy. Thera are 2 ways
+    /* you can push any number of functions to each strategy. There are 2 ways
      * of doing this: push_member_func and push_lambda. The former takes a
      * pointer to the member function. E.g. force strategy has defined functions
      * for calculating n-body forces, one for barycentric ref. frame
