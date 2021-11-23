@@ -22,6 +22,17 @@ make config=release
 
 The last command compiles the optimized code without debugging symbols.
 
+# Tests
+
+Go to `tests` folder and run
+
+```bash
+./run_all_tests.sh
+```
+
+Everything should be green :)
+
+
 
 # Usage
 

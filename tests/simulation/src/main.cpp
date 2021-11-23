@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 // 			cout << sim.get_particle(1).get_component<NameComponent>().name << endl;
 // 		});
 
-	step_strategy->push_member_func(&StepStrategy::print_mass);
+// 	step_strategy->push_member_func(&StepStrategy::print_mass);
 
 	stop_strategy->set_stop_func(
 		[](vector<Vec3> &pos, vector<Vec3> &vel, double t)
