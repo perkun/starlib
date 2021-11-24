@@ -26,7 +26,7 @@ project "constants"
 		"%{wks.location}/StarLib/src/**",
 	}
 
-	links {"StarLib", "gtest"}
+	links {"StarLib", "gtest",  "pthread"}
 
 	filter "configurations:Debug"
 		symbols "On"

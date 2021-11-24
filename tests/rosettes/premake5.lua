@@ -26,7 +26,7 @@ project "rosettes"
 		"%{wks.location}/StarLib/vendor/entt",
 	}
 
-	links {"StarLib", "gtest"}
+	links {"StarLib", "gtest",  "pthread"}
 
 	filter "configurations:Debug"
 		symbols "On"
